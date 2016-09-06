@@ -2,17 +2,25 @@ package com.cooksys.repository.impl;
 
 import java.util.List;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Repository;
+import org.springframework.test.annotation.Commit;
+
 import com.cooksys.entity.*;
 import com.cooksys.repository.PersonRepository;
 
 @Repository
+@Transactional
 public class PersonRepositoryImpl implements PersonRepository {
 
 	@Autowired
 	EntityManager em;
-
+	
 	@Override
 	// returns the current person based off id
 	public Person get(long id) {
@@ -23,40 +31,45 @@ public class PersonRepositoryImpl implements PersonRepository {
 
 	@Override
 	// updates person based off id
-	public int updatePerson(long id, String name, City city, List<Interest> interest, List<Group> group) {
-		return em
-				.createQuery(
-						"update person from Person person set name=:name,city=:city,interest=:interest,group=:group where id=:id",
-						int.class)
+	public Person updatePerson(long id, String name, City city, List<Interest> interest, List<Group> group) {
+		em.joinTransaction();
+		 em.createQuery("update Person person set name=:name,city=:city,interest=:interest,group=:group where id=:id")
 				.setParameter("id", id).setParameter("name", name).setParameter("city", city)
-				.setParameter("interest", interest).setParameter("group", group).getResultList().get(0);
-
+				.setParameter("interest", interest).setParameter("group", group)
+				.executeUpdate();
+		 return this.get(id);
 	}
 
 	@Override
-	public int updatePerson(long id, String property, Object value) {
-
-		return em.createQuery("update person from Person person set " + property + "=:name where id=:id", int.class)
-				.setParameter("id", id).setParameter("name", value).getResultList().get(0);
+	@Transactional
+	public void updatePerson(long id, String property, Object value) {
+		em.joinTransaction();
+		System.out.println("here");
+		 em.createQuery("update Person  set " + property + "=:name where id=:id")
+				.setParameter("id", id).setParameter("name", value)
+				.executeUpdate();
+		 em.flush();
+	
+		 
 	}
 
 	@Override
+	@Transactional
 	public Person deletePerson(long id) {
 		Person saved = this.get(id);
-		int value = em.createQuery("delete person from Person person where id=:id", int.class).setParameter("id", id)
-				.getResultList().get(0);
-		if (value > 0) {
-			return saved;
-		} else {
-			return null;
-		}
+		em.joinTransaction();
+			em.createQuery("delete Person where id=:id")
+			.setParameter("id", id)
+			.executeUpdate();
+		  return saved;
+		
 	}
 
 	@Override
 	public Person inputPerson(Person a) {
-		em.createNativeQuery("insert into person (name,city,intrest,group) values(name,city,intrest,group)",
-				Person.class).setParameter("name", a.getName()).setParameter("city", a.getCity())
-				.setParameter("intrest", a.getInterest()).setParameter("group", a.getGroup());
+		em.joinTransaction();
+		em.createNativeQuery("insert into Person (name,city,intrest,group) values(:name,:city,:intrest,:group)").setParameter("name", a.getName()).setParameter("city", a.getCity())
+				.setParameter("intrest", a.getInterest()).setParameter("group", a.getGroup()).executeUpdate();
 		return a;
 	}
 

@@ -1,6 +1,9 @@
 package com.cooksys.service;
 
 import java.util.List;
+
+import javax.persistence.EntityTransaction;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cooksys.entity.*;
@@ -17,30 +20,36 @@ public class PersonService {
 	@Autowired
 	private CityRepository cityRepository;
 
-	public Person updatePerson(long id, String string, long l, List<Interest> list, List<Group> list2) {
-
+	public Person updatePerson(long id,Person b) {
 		Person a = personRepository.get(id);
-		if (!a.getName().equals(string)) {
-			personRepository.updatePerson(id, "name", string);
+		if(b.getName()!=null&&a.getName()!=null){
+		if (!a.getName().equals(b.getName())) {
+			personRepository.updatePerson(id, "name", b.getName());
+			
+		}
+		}
+		if(b.getCity()!=null&&b.getCity().getName()!=null){
+			
+		if (!a.getCity().getName().equals(b.getCity().getName())) {
+			personRepository.updatePerson(id, "city", b.getCity());
 
 		}
-		if (a.getCity().getId() != l) {
-			personRepository.updatePerson(id, "city", cityRepository.get(l));
-
 		}
-		if (!a.getInterest().containsAll(list)) {
+		if (!a.getInterest().containsAll(b.getInterest())) {
 			// prevents duplicates from being added
-			a.getInterest().removeAll(list);
-			a.getInterest().addAll(list);
+			a.getInterest().removeAll(b.getInterest());
+			a.getInterest().addAll(b.getInterest());
 			personRepository.updatePerson(id, "interest", a.getInterest());
 
 		}
-		if (!a.getGroup().containsAll(list2)) {
+		if (!a.getGroup().containsAll(b.getGroup())) {
 			// prevents duplicates from being added
-			a.getGroup().removeAll(list2);
-			a.getGroup().addAll(list2);
+			a.getGroup().removeAll(b.getGroup());
+			a.getGroup().addAll(b.getGroup());
 			personRepository.updatePerson(id, "group", a.getGroup());
 		}
+		a = personRepository.get(id);
+
 		return a;
 
 	}

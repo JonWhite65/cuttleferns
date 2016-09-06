@@ -49,8 +49,9 @@ public class CityRepositoryImpl implements CityRepository {
 
 	@Override
 	public City inputCity(City a) {
-		em.createNativeQuery("insert into city (name,state) values(name,state)", City.class)
-				.setParameter("name", a.getName()).setParameter("state", a.getState());
+		 em.createNativeQuery("insert into city (name,state) values(:name,:state)", City.class)
+				.setParameter("name", a.getName()).setParameter("state", a.getState())
+				.executeUpdate();
 		return a;
 	}
 }

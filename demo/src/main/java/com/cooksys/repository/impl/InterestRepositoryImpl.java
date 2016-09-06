@@ -49,7 +49,7 @@ public class InterestRepositoryImpl implements InterestRepository {
 
 	@Override
 	public Interest inputInterest(Interest a) {
-		em.createNativeQuery("insert into interest (name) values(name)", Interest.class).setParameter("name",
+		em.createNativeQuery("insert into interest (name) values(:name)", Interest.class).setParameter("name",
 				a.getName());
 		return a;
 	}

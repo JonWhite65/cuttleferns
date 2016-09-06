@@ -54,7 +54,7 @@ public class GroupRepositoryImpl implements GroupRepository {
 
 	@Override
 	public Group inputGroup(Group a) {
-		em.createNativeQuery("insert into group (name,city,intrest,members) values(name,city,intrest,members)",
+		em.createNativeQuery("insert into group (name,city,intrest,members) values(:name,:city,:intrest,:members)",
 				Group.class).setParameter("name", a.getName()).setParameter("city", a.getCity())
 				.setParameter("intrest", a.getInterest()).setParameter("group", a.getMembers());
 		return a;

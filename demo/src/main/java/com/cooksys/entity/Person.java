@@ -18,11 +18,11 @@ public class Person  {
 	@JoinColumn(name = "City")
 	private City city;
 	
-	@OneToMany
+	@OneToMany(cascade = {CascadeType.ALL})
     @JoinColumn(name = "Interest")
     private List<Interest> interest;
     
-	@ManyToMany
+	@ManyToMany(cascade = {CascadeType.ALL})
   @JoinTable(name = "Group")
  private List<Group> group;
 

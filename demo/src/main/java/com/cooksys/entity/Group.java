@@ -13,11 +13,11 @@ public class Group {
 	@Column(name = "Name")
 	private String name;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "City")
 	private City city;
 	
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
    @JoinColumn(name = "Interest")
   private Interest interest;
     

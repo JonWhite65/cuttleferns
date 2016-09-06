@@ -40,7 +40,7 @@ public class PersonController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	public Person updatePerson(@PathVariable("id") long id, @RequestBody Person a) {
-		return personService.updatePerson(id, a.getName(), a.getCity().getId(), a.getInterest(), a.getGroup());
+		return personService.updatePerson(id,a);
 
 	}
 

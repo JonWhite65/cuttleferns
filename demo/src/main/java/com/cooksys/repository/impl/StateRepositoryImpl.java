@@ -49,7 +49,7 @@ public class StateRepositoryImpl implements StateRepository {
 
 	@Override
 	public State inputState(State a) {
-		em.createNativeQuery("insert into state (name) values(name)", State.class).setParameter("name", a.getName());
+		em.createNativeQuery("insert into state (name) values(:name)", State.class).setParameter("name", a.getName());
 		return a;
 	}
 

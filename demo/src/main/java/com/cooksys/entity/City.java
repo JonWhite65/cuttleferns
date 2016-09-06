@@ -10,11 +10,11 @@ public class City {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "Name")
+	@Column(name = "name")
 	private String name;
 	
-	@ManyToOne
-	@JoinColumn(name="State")
+	@ManyToOne(cascade = {CascadeType.ALL})
+	@JoinColumn(name="state")
 	private State state;
 	
 	public City(){}

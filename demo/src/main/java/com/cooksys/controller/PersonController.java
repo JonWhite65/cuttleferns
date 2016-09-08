@@ -11,23 +11,23 @@ import com.cooksys.entity.City;
 import com.cooksys.entity.Group;
 import com.cooksys.entity.Interest;
 import com.cooksys.entity.Person;
-import com.cooksys.repository.PersonRepository;
+import com.cooksys.repository.SpringDataPersonRepository;
 import com.cooksys.service.PersonService;
-
+//read create delete index
 @RestController
 @RequestMapping("people")
 public class PersonController {
 	@Autowired
-	private PersonRepository personRepository;
+	private SpringDataPersonRepository repo;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Person> getPeople() {
-		return personService.getAllPeople();
+		return personService.readAllPeople();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public Person inputPerson(@RequestBody Person person) {
-		return personRepository.inputPerson(person);
+		return personService.createPerson(person);
 	}
 
 	@Autowired
@@ -35,7 +35,7 @@ public class PersonController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Person person(@PathVariable("id") long id) {
-		return personRepository.get(id);
+		return personService.readPerson(id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
@@ -46,29 +46,29 @@ public class PersonController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public Person deletePerson(@PathVariable("id") long id) {
-		return personRepository.deletePerson(id);
+		return personService.deletePerson(id);
 	}
 
 	@RequestMapping(value = "/{id}/city", method = RequestMethod.GET)
 	public City getCityByPerson(@PathVariable("id") long id) {
-		return (City) personService.getObjectByPerson(id, new City());
+		return (City) personService.readObjectByPerson(id, new City());
 	}
 
 	@RequestMapping(value = "/{id}/city", method = RequestMethod.PUT)
 	public Person inputCityByPerson(@PathVariable("id") long id, @RequestBody City city) {
-		personRepository.updatePerson(id, "city", city);
-		return personRepository.get(id);
+		return personService.updatePerson(id, "city", city);
+		
 	}
 
 	@RequestMapping(value = "/{id}/interests", method = RequestMethod.GET)
-	public List<?> getAllInterestByPerson(@PathVariable("id") long id) {
-		return (List<?>) personService.getObjectByPerson(id, "interest");
+	public List<Interest> getAllInterestByPerson(@PathVariable("id") long id) {
+		return (List<Interest>) personService.readObjectByPerson(id, "interest");
 	}
 
 	@RequestMapping(value = "/{id}/interests", method = RequestMethod.PUT)
 	public Person inputInterestByPerson(@PathVariable("id") long id, @RequestBody List<Interest> interest) {
-		personRepository.updatePerson(id, "interest", interest);
-		return personRepository.get(id);
+		return personService.updatePerson(id, "interest", interest);
+		
 	}
 
 	@RequestMapping(value = "/{id}/interests/{id2}", method = RequestMethod.DELETE)
@@ -77,14 +77,14 @@ public class PersonController {
 	}
 
 	@RequestMapping(value = "/{id}/groups", method = RequestMethod.GET)
-	public List<?> getAllGroupsByPerson(@PathVariable("id") long id) {
-		return (List<?>) personService.getObjectByPerson(id, "group");
+	public List<Group> getAllGroupsByPerson(@PathVariable("id") long id) {
+		return (List<Group>) personService.readObjectByPerson(id, "group");
 	}
 
 	@RequestMapping(value = "/{id}/groups", method = RequestMethod.PUT)
-	public Person inputGroupByPerson(@PathVariable("id") long id, @RequestBody List<?> group) {
-		personRepository.updatePerson(id, "group", group);
-		return personRepository.get(id);
+	public Person inputGroupByPerson(@PathVariable("id") long id, @RequestBody List<Group> group) {
+		return personService.updatePerson(id, "group", group);
+		
 	}
 
 	@RequestMapping(value = "/{id}/groups/{id2}", method = RequestMethod.DELETE)

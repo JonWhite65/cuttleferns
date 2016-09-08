@@ -10,7 +10,7 @@ public class City {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "name")
+	@Column(name = "name",unique=true)
 	private String name;
 	
 	@ManyToOne(cascade = {CascadeType.ALL})
@@ -47,5 +47,13 @@ public class City {
 	public void setState(State state) {
 		this.state = state;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		if(obj.getClass().equals(City.class)&&this.getName().equals(((City)obj).getName())&&this.getState().equals(((City)obj).getState())){
+			return true;
+		}
+		
+		return false;
 
+}
 }

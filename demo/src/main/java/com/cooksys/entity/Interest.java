@@ -1,5 +1,7 @@
 package com.cooksys.entity;
 
+import java.util.List;
+
 import javax.persistence.*;
 
 
@@ -13,6 +15,11 @@ public class Interest  {
 	@Column(name = "Name")
 	private String name;
 	
+//	@OneToMany(mappedBy = "interest")
+//	private List<Person> persons;
+//	
+//	@OneToMany(mappedBy = "interest")
+//	private List<Group> groupss;
 	
 	public Interest(){
 		

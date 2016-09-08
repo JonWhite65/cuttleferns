@@ -14,17 +14,17 @@ public class Person  {
 	@Column(name = "Name")
 	private String name;
 
-	@ManyToOne
+	@ManyToOne(cascade = {CascadeType.ALL})
 	@JoinColumn(name = "City")
 	private City city;
 	
 	@OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "Interest")
+    @JoinColumn(name = "People_Interest")
     private List<Interest> interest;
     
 	@ManyToMany(cascade = {CascadeType.ALL})
-  @JoinTable(name = "Group")
- private List<Group> group;
+  @JoinTable(name = "People_Group")
+ private List<Group> groups;
 
     
     public Person(){
@@ -75,11 +75,11 @@ public class Person  {
 	}
 
 	public List<Group> getGroup() {
-		return group;
+		return groups;
 	}
 
 	public void setGroup(List<Group> group) {
-		this.group = group;
+		this.groups = group;
 	}
 
 

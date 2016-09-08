@@ -7,52 +7,70 @@ import com.cooksys.entity.City;
 import com.cooksys.entity.Group;
 import com.cooksys.entity.Interest;
 import com.cooksys.entity.Person;
-import com.cooksys.repository.CityRepository;
-import com.cooksys.repository.GroupRepository;
 import com.cooksys.repository.SpringDataGroupRepository;
 
 @Service
 public class GroupService {
 	@Autowired
 	SpringDataGroupRepository repo;
-	@Autowired
-	private GroupRepository groupRepository;
-	@Autowired
-	private CityRepository cityRepository;
+	
 
-	public Group updateGroup(long id, String string, long l, Interest interest, List<Person> list2) {
+	public Group updateGroup(long id, Group b) {
 
-		Group a = groupRepository.get(id);
-		if (!a.getName().equals(string)) {
-			groupRepository.updateGroup(id, "name", string);
-
+		Group a = repo.getOne(id);
+		if(b.getName()!=null&&a.getName()!=null){
+		if (!a.getName().equals(b.getName())) {
+			a.setName(b.getName());
 		}
-		if (a.getCity().getId() != l) {
-			groupRepository.updateGroup(id, "city", cityRepository.get(l));
-
 		}
-		if (!a.getInterest().equals(interest)) {
-			groupRepository.updateGroup(id, "interest", interest);
-
+		
+		if(b.getCity()!=null&&b.getCity().getName()!=null){
+		if (!a.getCity().getName().equals(b.getCity().getName())) {
+			a.setCity(b.getCity());
 		}
-		if (!a.getMembers().containsAll(list2)) {
+		}
+		
+		if(b.getInterest()!=null&&b.getInterest().getName()!=null){
+		if (!a.getInterest().getName().equals(b.getInterest().getName())) {
+			a.setInterest(b.getInterest());
+		}
+		}
+		
+		if (!a.getMembers().containsAll(b.getMembers())) {
 			// prevents duplicates from being added
-			a.getMembers().removeAll(list2);
-			a.getMembers().addAll(list2);
-			groupRepository.updateGroup(id, "group", a.getMembers());
-
+			a.getMembers().removeAll(b.getMembers());
+			a.getMembers().addAll(b.getMembers());
 		}
+		repo.saveAndFlush(a);
 		return a;
 
 	}
+	public Group updateGroup(long id, String x, Object a){
+		Group n = repo.getOne(id);
+		if(x.equals("city")){
+			n.setCity((City) a);
+		}
+		else if(x.equals("members")){
+			n.setMembers((List<Person>)a);
+		}
+		else if(x.equals("interest")){
+			n.setInterest((Interest)a);
+		}
+		else if(x.equals("name")){
+			n.setName((String)a);
+		}
+		repo.saveAndFlush(n);
+		return n;
+	}
+	
 
-	public List<Group> getAllGroups() {
+	public List<Group> readAllGroups() {
 
 		return repo.findAll();
 	}
 
-	public Object getObjectByGroup(long id, Object desired) {
-		Group requested = groupRepository.get(id);
+	public Object readObjectByGroup(long id, Object desired) {
+		Group requested = repo.getOne(id);
 		if (desired.getClass().equals(City.class)) {
 			return requested.getCity();
 		} else if (desired.getClass().equals(String.class)) {
@@ -68,12 +86,12 @@ public class GroupService {
 	}
 
 	public Object deleteListItemByGroup(long id, long id2, Object desired) {
-		Group requested = groupRepository.get(id);
+		Group requested = repo.getOne(id);
 		if (desired.equals("members")) {
 			for (Person a : requested.getMembers()) {
 				if (a.getId() == id2) {
 					requested.getMembers().remove(a);
-					groupRepository.updateGroup(id, "group", requested.getMembers());
+					repo.saveAndFlush(requested);
 					return a;
 				}
 			}
@@ -81,5 +99,14 @@ public class GroupService {
 
 		return null;
 
+	}
+public Group createGroup(Group a){
+		
+		return repo.saveAndFlush(a);
+	}
+	public Group deleteGroup(long id){
+		Group a=repo.getOne(id);
+		repo.delete(a);
+		return a;
 	}
 }

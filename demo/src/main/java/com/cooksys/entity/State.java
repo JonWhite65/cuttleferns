@@ -34,5 +34,14 @@ public class  State {
 	public void setName(String name) {
 		this.name = name;
 	}
+	@Override
+	public boolean equals(Object obj) {
+		if(obj.getClass().equals(State.class)&&this.getName().equals(((State)obj).getName())){
+			return true;
+		}
+		
+		return false;
+
+}
 
 }

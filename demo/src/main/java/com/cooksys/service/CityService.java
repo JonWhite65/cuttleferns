@@ -4,8 +4,8 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cooksys.entity.City;
+import com.cooksys.entity.Person;
 import com.cooksys.entity.State;
-import com.cooksys.repository.CityRepository;
 import com.cooksys.repository.SpringDataCityRepository;
 
 @Service
@@ -13,31 +13,28 @@ public class CityService {
 
 	@Autowired
 	SpringDataCityRepository repo;
-	@Autowired
-	private CityRepository cityRepository;
 
-	public City updateCity(long id, String string, long l) {
+	public  City updateCity(long id, City b) {
 
-		City a = cityRepository.get(id);
-		if (!a.getName().equals(string)) {
-			cityRepository.updateCity(id, "name", string);
-
+		City a = repo.getOne(id);
+		if (!a.getName().equals(b.getName())) {
+			a.setName(b.getName());
 		}
-		if (a.getState().getId() != l) {
-			cityRepository.updateCity(id, "state", cityRepository.get(l));
-
+		if (!a.getState().getName().equals(b.getState().getName())) {
+			a.setState(b.getState());
 		}
 		return a;
 
 	}
+	
 
-	public List<City> getAllCities() {
+	public List<City> readAllCities() {
 
 		return repo.findAll();
 	}
 
-	public Object getObjectByCity(long id, Object desired) {
-		City requested = cityRepository.get(id);
+	public Object readObjectByCity(long id, Object desired) {
+		City requested = repo.getOne(id);
 		if (desired.getClass().equals(State.class)) {
 			return requested.getState();
 		} else if (desired.getClass().equals(String.class)) {
@@ -51,5 +48,13 @@ public class CityService {
 
 		return null;
 	}
-
+public City createCity(City a){
+		
+		return repo.saveAndFlush(a);
+	}
+	public City deleteCity(long id){
+		City a=repo.getOne(id);
+		repo.delete(a);
+		return a;
+	}
 }

@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import com.cooksys.entity.City;
 import com.cooksys.entity.State;
-import com.cooksys.repository.CityRepository;
+import com.cooksys.repository.SpringDataCityRepository;
 import com.cooksys.service.CityService;
 
 @RestController
@@ -17,16 +17,16 @@ import com.cooksys.service.CityService;
 public class CityController {
 
 	@Autowired
-	private CityRepository cityRepository;
+	private SpringDataCityRepository sdcr;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<City> getPeople() {
-		return cityService.getAllCities();
+		return cityService.readAllCities();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public City inputCity(@RequestBody City city) {
-		return cityRepository.inputCity(city);
+		return cityService.createCity(city);
 	}
 
 	@Autowired
@@ -34,29 +34,29 @@ public class CityController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public City city(@PathVariable("id") long id) {
-		return cityRepository.get(id);
+		return sdcr.getOne(id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
 	public City updateCity(@PathVariable("id") long id, @RequestBody City a) {
-		return cityService.updateCity(id, a.getName(), a.getState().getId());
+		return cityService.updateCity(id, a);
 
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public City deleteCity(@PathVariable("id") long id) {
-		return cityRepository.deleteCity(id);
+		return cityService.deleteCity(id);
 	}
 
 	@RequestMapping(value = "/{id}/state", method = RequestMethod.GET)
 	public City getStateByCity(@PathVariable("id") long id) {
-		return (City) cityService.getObjectByCity(id, new State());
+		return (City) cityService.readObjectByCity(id, new State());
 	}
 
 	@RequestMapping(value = "/{id}/state", method = RequestMethod.PUT)
 	public City inputStateByCity(@PathVariable("id") long id, @RequestBody State state) {
-		cityRepository.updateCity(id, "state", state);
-		return cityRepository.get(id);
+		return cityService.updateCity(id,new City(sdcr.getOne(id).getName(),state));
+		
 	}
 
 }

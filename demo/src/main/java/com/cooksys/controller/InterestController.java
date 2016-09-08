@@ -8,33 +8,33 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import java.util.List;
 import com.cooksys.entity.Interest;
-import com.cooksys.repository.InterestRepository;
+import com.cooksys.repository.SpringDataInterestRepository;
 import com.cooksys.service.InterestService;
 
 @RestController
 @RequestMapping("interests")
 public class InterestController {
-
 	@Autowired
-	private InterestRepository interestRepository;
+	private InterestService interestService;
+	@Autowired
+	private SpringDataInterestRepository sdir;
 
 	@RequestMapping(method = RequestMethod.GET)
 	public List<Interest> getPeople() {
 
-		return interestService.getAllInterests();
+		return interestService.readAllInterests();
 	}
 
 	@RequestMapping(method = RequestMethod.POST)
 	public Interest inputInterest(@RequestBody Interest interest) {
-		return interestRepository.inputInterest(interest);
+		return interestService.createInterest(interest);
 	}
 
-	@Autowired
-	private InterestService interestService;
+	
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.GET)
 	public Interest interest(@PathVariable("id") long id) {
-		return interestRepository.get(id);
+		return sdir.getOne(id);
 	}
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.PATCH)
@@ -45,7 +45,7 @@ public class InterestController {
 
 	@RequestMapping(value = "/{id}", method = RequestMethod.DELETE)
 	public Interest deleteInterest(@PathVariable("id") long id) {
-		return interestRepository.deleteInterest(id);
+		return interestService.deleteInterest(id);
 	}
 
 }

@@ -1,66 +1,106 @@
 package com.cooksys.service;
 
 import java.util.List;
-
-import javax.persistence.EntityTransaction;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.cooksys.entity.*;
-import com.cooksys.repository.CityRepository;
-import com.cooksys.repository.PersonRepository;
+import com.cooksys.repository.SpringDataCityRepository;
+import com.cooksys.repository.SpringDataGroupRepository;
+import com.cooksys.repository.SpringDataInterestRepository;
 import com.cooksys.repository.SpringDataPersonRepository;
-
+import com.cooksys.service.CityService;
 @Service
 public class PersonService {
 	@Autowired
 	SpringDataPersonRepository repo;
 	@Autowired
-	private PersonRepository personRepository;
+	SpringDataCityRepository cityRepo;
 	@Autowired
-	private CityRepository cityRepository;
+	SpringDataInterestRepository interestRepo;
+	@Autowired
+	SpringDataGroupRepository groupRepo;
 
+	public Person readPerson(long id){
+		Person a =repo.findOne(id);
+		return a;
+	}
 	public Person updatePerson(long id,Person b) {
-		Person a = personRepository.get(id);
+		Person a = repo.findOne(id);
+		
 		if(b.getName()!=null&&a.getName()!=null){
 		if (!a.getName().equals(b.getName())) {
-			personRepository.updatePerson(id, "name", b.getName());
+			a.setName(b.getName());
+			repo.save(a);
+		}
+		}
+		
+		if(b.getCity()!=null){
+			a.setCity(b.getCity());
+			CityService cs =new CityService();
+			List<City>cityList=cs.readAllCities();
+			for(City each :cityList){
+				if(a.getCity().equals(each)){
+					a.setId(each.getId());
+					break;
+				}
+			}
+			cityRepo.save(a.getCity());
 			
 		}
-		}
-		if(b.getCity()!=null&&b.getCity().getName()!=null){
-			
-		if (!a.getCity().getName().equals(b.getCity().getName())) {
-			personRepository.updatePerson(id, "city", b.getCity());
-
-		}
-		}
+		
+		if(b.getInterest()!=null){
 		if (!a.getInterest().containsAll(b.getInterest())) {
 			// prevents duplicates from being added
 			a.getInterest().removeAll(b.getInterest());
 			a.getInterest().addAll(b.getInterest());
-			personRepository.updatePerson(id, "interest", a.getInterest());
-
+			interestRepo.save(a.getInterest());
 		}
+		}
+		
+		if(b.getGroup()!=null){
 		if (!a.getGroup().containsAll(b.getGroup())) {
 			// prevents duplicates from being added
 			a.getGroup().removeAll(b.getGroup());
 			a.getGroup().addAll(b.getGroup());
-			personRepository.updatePerson(id, "group", a.getGroup());
+			groupRepo.save(a.getGroup());
 		}
-		a = personRepository.get(id);
-
+		}
+		
+		
+		repo.saveAndFlush(a);
 		return a;
 
 	}
+	public Person updatePerson(long id, String x, Object a){
+		Person n = repo.findOne(id);
+		if(a!=null){
+		if(x.equals("city")){
+			n.setCity((City) a);
+			cityRepo.save((City)a);
+		}
+		else if(x.equals("group")){
+			n.setGroup((List<Group>)a);
+			groupRepo.save(n.getGroup());
+		}
+		else if(x.equals("interest")){
+			n.setInterest((List<Interest>)a);
+			interestRepo.save(n.getInterest());
+		}
+		else if(x.equals("name")){
+			n.setName((String)a);
+		}
+		}
+		repo.saveAndFlush(n);
+		return n;
+	}
 
-	public List<Person> getAllPeople() {
+	public List<Person> readAllPeople() {
 
 		return repo.findAll();
 	}
 
-	public Object getObjectByPerson(long id, Object desired) {
-		Person requested = personRepository.get(id);
+	public Object readObjectByPerson(long id, Object desired) {
+		Person requested = repo.findOne(id);
 		if (desired.getClass().equals(City.class)) {
 			return requested.getCity();
 		} else if (desired.getClass().equals(String.class)) {
@@ -77,12 +117,12 @@ public class PersonService {
 
 	public Object deleteListItemByPerson(long id, long id2, Object desired) {
 
-		Person requested = personRepository.get(id);
+		Person requested = repo.findOne(id);
 		if (desired.equals("interest")) {
 			for (Interest a : requested.getInterest()) {
 				if (a.getId() == id2) {
 					requested.getInterest().remove(a);
-					personRepository.updatePerson(id, "interest", requested.getInterest());
+					//repo.saveAndFlush(requested);
 					return a;
 				}
 			}
@@ -90,7 +130,7 @@ public class PersonService {
 			for (Group a : requested.getGroup()) {
 				if (a.getId() == id2) {
 					requested.getGroup().remove(a);
-					personRepository.updatePerson(id, "group", requested.getGroup());
+					//repo.saveAndFlush(requested);
 					return a;
 				}
 			}
@@ -98,5 +138,23 @@ public class PersonService {
 
 		return null;
 
+	}
+	public Person createPerson(Person a){
+		if(a.getCity()!=null){
+			cityRepo.save(a.getCity());
+		}
+		if(a.getInterest()!=null){
+			interestRepo.save(a.getInterest());
+		}
+		if(a.getGroup()!=null){
+			groupRepo.save(a.getGroup());
+		}
+		repo.save(a);
+		return a;
+	}
+	public Person deletePerson(long id){
+		Person a=repo.findOne(id);
+		repo.delete(a);
+		return a;
 	}
 }

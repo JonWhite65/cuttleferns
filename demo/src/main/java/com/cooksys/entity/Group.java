@@ -22,7 +22,7 @@ public class Group {
   private Interest interest;
     
 
-  @ManyToMany(mappedBy = "group")
+  @ManyToMany(mappedBy = "groups")
   private List<Person> members;
     
     public Group(){}

@@ -34,14 +34,16 @@ public class  State {
 	public void setName(String name) {
 		this.name = name;
 	}
+
 	@Override
 	public boolean equals(Object obj) {
-		if(obj.getClass().equals(State.class)&&this.getName().equals(((State)obj).getName())){
+		if (!obj.getClass().equals(State.class)) {
+			return false;
+		} else if (this.getName()!=null&&!((State) obj).getName().equals(this.getName())) {
+			return false;
+		} else {
 			return true;
 		}
-		
-		return false;
-
-}
+	}
 
 }

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<title>Welcome to the Person Retrieval System!</title>
+<body>
+<h3> Welcome to the Person Retrieval System! </h3>
+	Welcome! Which user would you like to revive? <br/>
+<div class="list-group">
+			<a ng-repeat="person in pC.people" ng-href="#peoples/{{person.id}}" class="list-group-item"> 
+				<span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+				{{person.name}}
+			</a>
+		</div>
+
+</body>
+</html>

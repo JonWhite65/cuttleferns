@@ -15,11 +15,11 @@ public class Interest  {
 	@Column(name = "Name")
 	private String name;
 	
-//	@OneToMany(mappedBy = "interest")
-//	private List<Person> persons;
-//	
-//	@OneToMany(mappedBy = "interest")
-//	private List<Group> groupss;
+	@OneToMany(mappedBy = "interest")
+	private List<Person> persons;
+	
+	@OneToMany(mappedBy = "interest")
+	private List<Group> groups;
 	
 	public Interest(){
 		
@@ -43,6 +43,16 @@ public class Interest  {
 	public void setName(String name) {
 		this.name = name;
 	}
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(Interest.class)) {
+			return false;
+		} else if (this.getName()!=null&&!((Interest) obj).getName().equals(this.getName())) {
+			return false;
+		} else {
+			return true;
+		}
+	}
 	
 }

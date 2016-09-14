@@ -1,6 +1,9 @@
 package com.cooksys.entity;
 
 import javax.persistence.*;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.List;
 
 @Entity
@@ -21,7 +24,7 @@ public class Group {
    @JoinColumn(name = "Interest")
   private Interest interest;
     
-
+	@JsonIgnore
   @ManyToMany(mappedBy = "groups")
   private List<Person> members;
     
@@ -81,6 +84,22 @@ public class Group {
 
 	public void setMembers(List<Person> members) {
 		this.members = members;
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (!obj.getClass().equals(Group.class)) {
+			return false;
+		} else if (this.getName()!=null&&!((Group) obj).getName().equals(this.getName())) {
+			return false;
+		} else if (this.getCity()!=null&&!((Group) obj).getCity().equals(this.getCity())){
+			return false;
+		}
+		else if (this.getInterest()!=null&&!((Group) obj).getInterest().equals(this.getInterest())){
+			return false;
+		}
+		else{
+			return true;
+		}
 	}
 	
 }

@@ -1,27 +1,30 @@
 package com.cooksys.entity;
 
+
 import javax.persistence.*;
 
 
-@Entity
-public class City {
 
+
+@Entity
+public class City { 
 	@Id
-	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@GeneratedValue (strategy=GenerationType.IDENTITY)
 	private long id;
 	
-	@Column(name = "name",unique=true)
+	@Column(name = "name")
 	private String name;
 	
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne (cascade = {CascadeType.ALL})
 	@JoinColumn(name="state")
 	private State state;
 	
 	public City(){}
-	public City( String name, State state) {
 	
+	public City( String name, State state) {
 		this.name = name;
-		//this.state = state;
+		this.state = state;
+		
 	}
 
 	public long getId() {
@@ -48,12 +51,21 @@ public class City {
 		this.state = state;
 	}
 	@Override
-	public boolean equals(Object obj) {
-		if(obj.getClass().equals(City.class)&&this.getName().equals(((City)obj).getName())&&this.getState().equals(((City)obj).getState())){
-			return true;
-		}
-		
+	public boolean equals(Object obj){
+		if(obj.getClass()!= City.class){
 		return false;
+		}
+		else if(this.getName()!=null&&!((City)obj).getName().equals(this.getName())){
+			return false;
+		}
+		else if(this.getState()!=null&&!((City)obj).getState().equals(this.getState())){
+			return false;
+		}
+		else if((this.getState()==null&&((City)obj).getState()!=null)||(this.getName()==null&&((City)obj).getName()!=null)) {
+			return false;
+			
+		}
+		return true;
+	}
 
-}
 }

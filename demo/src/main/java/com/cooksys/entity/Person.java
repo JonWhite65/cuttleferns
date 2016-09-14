@@ -14,15 +14,15 @@ public class Person  {
 	@Column(name = "Name")
 	private String name;
 
-	@ManyToOne(cascade = {CascadeType.ALL})
+	@ManyToOne (cascade = {CascadeType.ALL})
 	@JoinColumn(name = "City")
 	private City city;
 	
-	@OneToMany(cascade = {CascadeType.ALL})
-    @JoinColumn(name = "People_Interest")
+	@OneToMany (cascade = {CascadeType.ALL})
+    @JoinTable(name = "People_Interest")
     private List<Interest> interest;
     
-	@ManyToMany(cascade = {CascadeType.ALL})
+	@ManyToMany (cascade = {CascadeType.ALL})
   @JoinTable(name = "People_Group")
  private List<Group> groups;
 
@@ -35,7 +35,11 @@ public class Person  {
 		this.name = name;
 		this.city = city;
 	}
-
+	public Person( long id, String name,City city) {
+		this.id= id;
+		this.name = name;
+		this.city = city;
+	}
 
 	public long getId() {
 		return id;

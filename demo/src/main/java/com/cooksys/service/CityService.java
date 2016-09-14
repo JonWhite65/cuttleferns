@@ -13,20 +13,21 @@ public class CityService {
 
 	@Autowired
 	SpringDataCityRepository repo;
+	@Autowired
+	CommonService commonService;
 
-	public  City updateCity(long id, City b) {
+	public City updateCity(long id, City b) {
 
-		City a = repo.getOne(id);
+		City a = repo.findOne(id);
 		if (!a.getName().equals(b.getName())) {
 			a.setName(b.getName());
 		}
-		if (!a.getState().getName().equals(b.getState().getName())) {
-			a.setState(b.getState());
+		if (!a.getState().equals(b.getState())) {
+			a.setState(commonService.checkState(b.getState()));
 		}
 		return a;
 
 	}
-	
 
 	public List<City> readAllCities() {
 
@@ -34,7 +35,7 @@ public class CityService {
 	}
 
 	public Object readObjectByCity(long id, Object desired) {
-		City requested = repo.getOne(id);
+		City requested = repo.findOne(id);
 		if (desired.getClass().equals(State.class)) {
 			return requested.getState();
 		} else if (desired.getClass().equals(String.class)) {
@@ -48,12 +49,15 @@ public class CityService {
 
 		return null;
 	}
-public City createCity(City a){
-		
-		return repo.saveAndFlush(a);
+
+	public City createCity(City a) {
+		City checkedCity = commonService.checkCity(a);
+		return repo.saveAndFlush(checkedCity);
+
 	}
-	public City deleteCity(long id){
-		City a=repo.getOne(id);
+
+	public City deleteCity(long id) {
+		City a = repo.findOne(id);
 		repo.delete(a);
 		return a;
 	}
